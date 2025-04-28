@@ -114,7 +114,7 @@ services:
       - "5432:5432"     
 
   nifi:
-    image: apache/nifi:latest
+    image: apache/nifi:1.23.2
     container_name: nifi
     ports:
       - "8080:8080"   # ONLY the Web UI HTTP Port
