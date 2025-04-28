@@ -1,0 +1,124 @@
+services:
+  m1:
+    build: 
+      context: .
+      target: hadoop
+    hostname: master1
+    container_name: m1
+    ports:
+      - "9180:8088"
+      - "9885:9870"
+    networks:
+      - hd_net
+    healthcheck:
+      test: ["CMD", "hdfs", "haadmin", "-checkHealth", "nn1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./hadoop_data:/usr/local/shared_data
+  m2:
+    build: 
+      context: .
+      target: hadoop
+    hostname: master2
+    container_name: m2 
+    ports:
+      - "9280:8088"
+      - "9886:9870"
+    networks:
+      - hd_net
+    volumes:
+      - ./hadoop_data:/usr/local/shared_data
+  m3:
+    build: 
+      context: .
+      target: hadoop
+    hostname: master3
+    container_name: m3 
+    ports:
+      - "9380:8088"
+      - "9887:9870"
+    networks:
+      - hd_net
+    volumes:
+      - ./hadoop_data:/usr/local/shared_data
+  w: 
+    build: 
+      context: .
+      target: hadoop
+    hostname: worker
+    container_name: w1
+    depends_on:
+      m1:
+        condition: service_healthy
+    networks:
+        - hd_net
+    healthcheck:
+      test: ["CMD", "bash", "-c", "jps | grep -q DataNode"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./hadoop_data:/usr/local/shared_data
+
+
+
+  hserver:
+    build:
+      context: .
+      target: hive
+    hostname: hserver
+    container_name: hserver
+    depends_on:
+      - hmetastore
+    networks:
+      - hd_net
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+
+  hmetastore:
+    build:
+      context: .
+      target: hive
+    hostname: hmetastore
+    container_name: hmetastore
+    depends_on:
+      w:
+        condition: service_healthy
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - hd_net
+
+
+  postgresdb:
+    image: postgres:13
+    hostname: postgresdb
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: hivemetastore
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hive -d hivemetastore" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - hd_net
+    ports:
+      - "5432:5432"     
+
+volumes:
+  hadoop_data:
+  pgdata:
+    
+
+networks:
+  hd_net:
+
+

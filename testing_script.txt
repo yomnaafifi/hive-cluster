@@ -1,0 +1,33 @@
+CREATE TABLE newTable (
+    id int,
+    name string,
+    age int,
+    email string
+);
+
+# Insert values DDL
+INSERT INTO newTable (id, name, age, email)
+VALUES
+    (5, 'Robert Wilson', 32, 'robert.wilson@example.com'),
+    (6, 'Sarah Lee', 29, 'sarah.lee@example.com'),
+    (7, 'David Brown', 40, 'david.brown@example.com'),
+    (8, 'Jessica White', 27, 'jessica.white@example.com'),
+    (9, 'William Harris', 33, 'william.harris@example.com'),
+    (10, 'Olivia Martinez', 26, 'olivia.martinez@example.com');
+
+    (1, 'John Smith', 30, 'john.smith@example.com'),
+    (2, 'Jane Doe', 28, 'jane.doe@example.com'),
+    (3, 'Michael Johnson', 35, 'michael.johnson@example.com'),
+    (4, 'Emily Davis', 25, 'emily.davis@example.com');
+
+
+    (11, 'James Johnson', 31, 'james.johnson@example.com'),
+    (12, 'Sophia Anderson', 29, 'sophia.anderson@example.com'),
+    (13, 'Benjamin Davis', 36, 'benjamin.davis@example.com'),
+    (14, 'Ava Rodriguez', 24, 'ava.rodriguez@example.com'),
+    (15, 'Samuel Wilson', 34, 'samuel.wilson@example.com'),
+    (16, 'Mia Brown', 30, 'mia.brown@example.com'),
+    (17, 'Joseph Smith', 38, 'joseph.smith@example.com'),
+    (18, 'Charlotte Taylor', 28, 'charlotte.taylor@example.com'),
+    (19, 'Daniel Lee', 27, 'daniel.lee@example.com'),
+    (20, 'Emma Johnson', 35, 'emma.johnson@example.com');
