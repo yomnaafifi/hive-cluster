@@ -1,98 +1,95 @@
--- Active: 1745830860242@@localhost@10000@default
-DROP TABLE IF EXISTS fact_customer_feedback;
-DROP TABLE IF EXISTS dim_sales_channel;
-DROP TABLE IF EXISTS dim_class_of_service;
-DROP TABLE IF EXISTS dim_date;
-DROP TABLE IF EXISTS dim_time;
-DROP TABLE IF EXISTS dim_airport;
-DROP TABLE IF EXISTS dim_aircraft;
-DROP TABLE IF EXISTS dim_passenger;
+-- 1. Create database (optional)
+CREATE DATABASE IF NOT EXISTS customer_care_staging;
+USE customer_care_staging;
 
-CREATE TABLE dim_date (
-    date_id INT,
-    year INT,
-    month INT,
-    day_of_month INT,
-    day_of_week INT,
-    is_holiday STRING,
-    is_weekend STRING
+-- 2. Table Definitions
+CREATE TABLE IF NOT EXISTS customer_dim (
+    sk_passenger_id INT,
+    passenger_id INT,
+    passenger_name STRING,
+    passenger_dateofbirth DATE,
+    passenger_gender STRING,
+    passenger_address STRING,
+    passenger_phone STRING,
+    passenger_points INT,
+    passenger_status STRING,
+    start_date DATE,
+    end_date DATE,
+    is_current STRING,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 )
+COMMENT 'Customer dimension table'
 STORED AS ORC;
 
-CREATE TABLE dim_time (
-    time_id INT,
+CREATE TABLE IF NOT EXISTS time_dim (
+    time_id TIMESTAMP,
     hour INT,
-    minutes INT,
-    second INT
+    minute INT,
+    hour_description STRING,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 )
+COMMENT 'Time dimension table'
 STORED AS ORC;
 
-CREATE TABLE dim_airport (
-    airport_id INT,
-    airport_code STRING,
-    city STRING,
-    country STRING,
-    continent STRING,
-    longitude DOUBLE,
-    latitude DOUBLE,
-    time_zone STRING,
-    airport_name STRING
+CREATE TABLE IF NOT EXISTS date_dim (
+    date_id DATE,
+    year INT,
+    quarter INT,
+    month INT,
+    day_of_week INT,
+    day_of_month INT,
+    day_of_year INT,
+    week_of_year INT,
+    is_holiday INT,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 )
+COMMENT 'Date dimension table'
 STORED AS ORC;
 
-CREATE TABLE dim_aircraft (
-    aircraft_id INT,
-    tail_number STRING,
-    manufacturer STRING,
-    capacity INT,
-    manufacturing_year INT
-)
-STORED AS ORC;
-
-CREATE TABLE dim_passenger (
-    passenger_id INT,
-    first_name STRING,
-    last_name STRING,
-    ssn STRING,
-    email STRING,
-    phone STRING,
-    birth_date DATE
-)
-STORED AS ORC;
-
-CREATE TABLE dim_class_of_service (
-    class_id INT,
-    class_type STRING
-)
-STORED AS ORC;
-
-CREATE TABLE dim_sales_channel (
-    channel_id INT,
-    channel_type STRING
-)
-STORED AS ORC;
-
-CREATE TABLE fact_customer_feedback (
+CREATE TABLE IF NOT EXISTS feedback_dim (
     feedback_id INT,
-    passenger_id INT,
-    time_id INT,
-    date_id INT,
-    aircraft_id INT,
-    origin_airport_id INT,
-    destination_airport INT,
-    departure_delay_minutes INT,
-    arrival_delay_minutes INT,
-    class_id INT,
-    channel_id INT,
-    overall_rating INT,
-    review_header STRING,
-    recommended STRING,
-    seat_comfort INT,
-    cabin_staff_service INT,
-    ground_service INT,
-    value_for_money INT,
-    food_beverages INT,
-    inflight_entertainment INT,
-    wifi_connectivity INT
+    type STRING,
+    description STRING,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 )
+COMMENT 'Feedback dimension table'
 STORED AS ORC;
+
+CREATE TABLE IF NOT EXISTS employee_dim (
+    sk_employee_id INT,
+    employee_id INT,
+    employee_name STRING,
+    employee_dateofbirth DATE,
+    employee_gender STRING,
+    employee_address STRING,
+    employee_phone STRING,
+    salary DECIMAL(10,2),
+    start_date DATE,
+    end_date DATE,
+    is_current STRING,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+)
+COMMENT 'Employee dimension table'
+STORED AS ORC;
+
+CREATE TABLE IF NOT EXISTS customercarefact (
+    customer_id INT,
+    date_id DATE,
+    time_id TIMESTAMP,
+    feedback_id INT,
+    employee_id INT,
+    interaction_type STRING,
+    satisfaction_rate DECIMAL(5,2),
+    duration INT,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+)
+COMMENT 'Customer care fact table'
+STORED AS ORC;
+
+show tables;
