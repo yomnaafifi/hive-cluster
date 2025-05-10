@@ -1,9 +1,8 @@
--- 1. Create database (optional)
+-- Active: 1745830860242@@localhost@10000
 CREATE DATABASE IF NOT EXISTS customer_care_staging;
 USE customer_care_staging;
-
--- 2. Table Definitions
-CREATE TABLE IF NOT EXISTS customer_dim (
+-- Customer Dimension
+CREATE EXTERNAL TABLE customer_dim (
     sk_passenger_id INT,
     passenger_id INT,
     passenger_name STRING,
@@ -19,47 +18,55 @@ CREATE TABLE IF NOT EXISTS customer_dim (
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Customer dimension table'
-STORED AS ORC;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/customer_dim';
 
-CREATE TABLE IF NOT EXISTS time_dim (
+-- Time Dimension
+CREATE EXTERNAL TABLE time_dim (
     time_id TIMESTAMP,
-    hour INT,
-    minute INT,
+    hour SMALLINT,
+    minute SMALLINT,
     hour_description STRING,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Time dimension table'
-STORED AS ORC;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/time_dim';
 
-CREATE TABLE IF NOT EXISTS date_dim (
+-- Date Dimension
+CREATE EXTERNAL TABLE date_dim (
     date_id DATE,
     year INT,
-    quarter INT,
-    month INT,
-    day_of_week INT,
-    day_of_month INT,
-    day_of_year INT,
-    week_of_year INT,
-    is_holiday INT,
+    quarter SMALLINT,
+    month SMALLINT,
+    day_of_week SMALLINT,
+    day_of_month SMALLINT,
+    day_of_year SMALLINT,
+    week_of_year SMALLINT,
+    is_holiday SMALLINT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Date dimension table'
-STORED AS ORC;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/date_dim';
 
-CREATE TABLE IF NOT EXISTS feedback_dim (
+-- Feedback Dimension
+CREATE EXTERNAL TABLE feedback_dim (
     feedback_id INT,
     type STRING,
     description STRING,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Feedback dimension table'
-STORED AS ORC;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/feedback_dim';
 
-CREATE TABLE IF NOT EXISTS employee_dim (
+-- Employee Dimension
+CREATE EXTERNAL TABLE employee_dim (
     sk_employee_id INT,
     employee_id INT,
     employee_name STRING,
@@ -74,10 +81,12 @@ CREATE TABLE IF NOT EXISTS employee_dim (
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Employee dimension table'
-STORED AS ORC;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/employee_dim';
 
-CREATE TABLE IF NOT EXISTS customercarefact (
+-- Customer Care Fact Table
+CREATE EXTERNAL TABLE customercarefact (
     customer_id INT,
     date_id DATE,
     time_id TIMESTAMP,
@@ -89,7 +98,6 @@ CREATE TABLE IF NOT EXISTS customercarefact (
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 )
-COMMENT 'Customer care fact table'
-STORED AS ORC;
-
-show tables;
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/customer_care_staging/customercarefact';
