@@ -113,10 +113,25 @@ services:
     ports:
       - "5432:5432"     
 
+  sourcedwh:
+    image: postgres:13
+    hostname: postgresdwh
+    container_name: postgresdwh
+    environment:
+      POSTGRES_USER: mydwh
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: mydwh
+    volumes:
+      - pgdwh:/var/lib/postgresql/dwhdata
+    networks:
+      - hd_net
+    ports:
+      - "5433:5432" 
 
 volumes:
   hadoop_data:
   pgdata:
+  pgdwh:
     
 
 networks:
