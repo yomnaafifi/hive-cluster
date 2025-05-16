@@ -32,12 +32,7 @@
 		<name>hive.metastore.uris</name>
 		<value>thrift://hmetastore:9083</value>
 	</property>
-
-	<property>
-		<name>tez.lib.uris</name>
-		<value>hdfs://mycluster/apps/tez/tez.tar.gz</value>
-	</property>
-
+	
 	<property>
 		<name>hive.execution.engine</name>
 		<value>tez</value>
