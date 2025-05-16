@@ -29,10 +29,6 @@ RUN mkdir -p /usr/local/hadoop/hdfs/namenode && \
     chown -R hduser:hadoop /usr/local/hadoop/hdfs/datanode && \
     chown -R hduser:hadoop /usr/local/hadoop/hdfs/journals && \
     chown -R hduser:hadoop /usr/local/hadoop/tmp 
-    # chmod -R 777 /usr/local/hadoop/hdfs/namenode && \
-    # chmod -R 777 /usr/local/hadoop/hdfs/datanode && \
-    # chmod -R 777 /usr/local/hadoop/hdfs/journals && \
-    # chmod -R 777 /usr/local/hadoop/tmp 
 
 ADD https://dlcdn.apache.org/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz /usr/local
 RUN tar -xzf /usr/local/apache-zookeeper-3.8.4-bin.tar.gz -C /usr/local && \
@@ -102,13 +98,30 @@ ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.5.4/postgresql-4
 RUN sudo chown -R hduser:hadoop /usr/local/hive/lib/postgresql-42.5.4.jar && \
     sudo chmod -R 755 /usr/local/hive/lib/postgresql-42.5.4.jar
 
+
+# Add and extract Sqoop
+ADD https://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz /sqoop.tar.gz
+RUN sudo tar -xzvf /sqoop.tar.gz -C /usr/local && \
+    sudo mv /usr/local/sqoop-1.4.7.bin__hadoop-2.6.0 /usr/local/sqoop && \
+    sudo rm /sqoop.tar.gz && \
+    sudo chown -R hduser:hadoop /usr/local/sqoop
+
+
+RUN cp /usr/local/hive/lib/postgresql-42.5.4.jar /usr/local/sqoop/lib/
+RUN chown -R hduser:hadoop /usr/local/sqoop/lib
+
+
 COPY ./configurations//hive-site.xml /usr/local/hive/conf/hive-site.xml             
 COPY hiventry.sh /home/hduser/
-
+COPY ./configurations/sqoop-env.sh /usr/local/sqoop/conf/sqoop-env.sh
+RUN sudo chown -R hduser:hadoop /usr/local/sqoop/conf
 
 ENV HIVE_HOME=/usr/local/hive
 ENV HIVE_CONF_DIR=$HIVE_HOME/conf
 ENV PATH=$PATH:$HIVE_HOME/bin 
+ENV SQOOP_HOME=/usr/local/sqoop
+ENV PATH=$PATH:$SQOOP_HOME/bin
+
 
 RUN sudo chmod +x /home/hduser/hiventry.sh
 
