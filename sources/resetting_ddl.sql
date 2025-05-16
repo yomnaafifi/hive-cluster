@@ -1,9 +1,13 @@
+DO
+$$
+DECLARE
+    tabname TEXT;
 BEGIN
-    FOR t IN (SELECT table_name FROM user_tables) LOOP
-        EXECUTE IMMEDIATE 'DROP TABLE ' || t.table_name || ' CASCADE CONSTRAINTS';
+    FOR tabname IN
+        SELECT tablename FROM pg_tables
+        WHERE schemaname = 'mydwh'
+    LOOP
+        EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(tabname) || ' CASCADE';
     END LOOP;
-END;
-/
-
-
-select * from user_tables;
+END
+$$;
